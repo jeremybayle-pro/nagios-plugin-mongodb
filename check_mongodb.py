@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python3
 
 #
 # A MongoDB Nagios check script
@@ -335,7 +335,7 @@ def mongo_connect(host=None, port=None, ssl=False, user=None, passwd=None, repli
             sys.exit(0)
 
         if user and passwd:
-            db = con[authdb]
+            db = con["admin"]
             try:
               db.authenticate(user, password=passwd)
             except PyMongoError:
@@ -1632,9 +1632,6 @@ def maintain_delta(new_vals, host, port, action):
 def replication_get_time_diff(con):
     col = 'oplog.rs'
     local = con.local
-    ol = local.system.namespaces.find_one({"name": "local.oplog.$main"})
-    if ol:
-        col = 'oplog.$main'
     firstc = local[col].find().sort("$natural", 1).limit(1)
     lastc = local[col].find().sort("$natural", -1).limit(1)
     first = next(firstc)
